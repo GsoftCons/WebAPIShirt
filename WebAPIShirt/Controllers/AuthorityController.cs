@@ -23,7 +23,7 @@ namespace WebAPIShirt.Controllers
                 ModelState.AddModelError("Unauthorized", "You are not authorized");
                 var problemDetails = new ValidationProblemDetails(ModelState)
                 {
-                    Status = StatusCodes.Status400BadRequest
+                    Status = StatusCodes.Status401Unauthorized
                 };
                 return new UnauthorizedObjectResult(problemDetails);
             }

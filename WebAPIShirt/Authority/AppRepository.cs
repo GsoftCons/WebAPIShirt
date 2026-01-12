@@ -12,10 +12,12 @@
                 Secret = "45C01F42-09C2-49DD-9436-5E50646155B6" //SELECT NEWID() AS ClientId, NEWID() AS Secret
             }
         };
+
         public static bool Authenticate(string clientId, string secret)
         {
             return _applications.Any(a => a.ClientId == clientId && a.Secret == secret);
         }
+
         public static Application? GetApplicationByClientId(string clientId)
         {
             return _applications.FirstOrDefault(a => a.ClientId == clientId);
