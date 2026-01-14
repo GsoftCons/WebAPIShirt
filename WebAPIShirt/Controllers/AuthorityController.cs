@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using WebAPIShirt.Authority;
 
 namespace WebAPIShirt.Controllers
@@ -7,15 +9,23 @@ namespace WebAPIShirt.Controllers
     [ApiController]
     public class AuthorityController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+        public AuthorityController(IConfiguration configuration)
+        {
+          this.configuration = configuration;
+        }
+
         [HttpPost("auth")]
         public IActionResult Authenticate([FromBody] AppCredential credential)
         {
-            if ((AppRepository.Authenticate(credential.ClientId, credential.Secret)))
+            if ((Authenticator.Authenticate(credential.ClientId, credential.Secret)))
             {
+                var expiresAt = DateTime.UtcNow.AddMinutes(10);
+
                 return Ok(new
                 {
-                    access_toke = CreateToken(credential.ClientId),
-                    expires_at = DateTime.UtcNow.AddMinutes(10)
+                    access_toke = Authenticator.CreateToken(credential.ClientId,expiresAt, configuration["SecurityKey"] ?? string.Empty),
+                    expires_at = expiresAt
                 });
             }
             else
@@ -29,9 +39,6 @@ namespace WebAPIShirt.Controllers
             }
         }
 
-        private string CreateToken(string clientId)
-        {
-            return string.Empty;
-        }
+        
     }
 }
