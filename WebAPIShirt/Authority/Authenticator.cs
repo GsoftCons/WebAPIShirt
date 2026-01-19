@@ -47,6 +47,11 @@ namespace WebAPIShirt.Authority
             var tokenHandler = new JsonWebTokenHandler();
             return tokenHandler.CreateToken(tokenDescriptor);
         }
+
+        internal static async Task<bool> VerifyTokenAsync(string tokenString, string securityKey)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
