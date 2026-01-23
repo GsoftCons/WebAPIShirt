@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens.Experimental;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPIShirt.Authority
@@ -50,7 +51,40 @@ namespace WebAPIShirt.Authority
 
         internal static async Task<bool> VerifyTokenAsync(string tokenString, string securityKey)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrEmpty(tokenString) || string.IsNullOrEmpty(securityKey)) 
+                return false;
+
+            var keyBytes = System.Text.Encoding.UTF8.GetBytes(securityKey);
+            var tokenHandler = new JsonWebTokenHandler();
+
+            var validationParameter = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                var result = await tokenHandler.ValidateTokenAsync(tokenString, validationParameter);
+                return result.IsValid;
+            }
+
+            catch(SecurityTokenMalformedException)
+            {
+                return false;
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+
         }
     }
 
