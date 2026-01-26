@@ -24,7 +24,7 @@ namespace WebAPIShirt.Controllers
 
                 return Ok(new
                 {
-                    access_toke = Authenticator.CreateToken(credential.ClientId,expiresAt, configuration["SecurityKey"] ?? string.Empty),
+                    access_token = Authenticator.CreateToken(credential.ClientId,expiresAt, configuration["SecurityKey"] ?? string.Empty),
                     expires_at = expiresAt
                 });
             }
